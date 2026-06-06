@@ -1,0 +1,67 @@
+{
+  "schema": "ptxspatial-trace-v1",
+  "source_kind": "rtlmap",
+  "source": "vendor/gemma-generated/generated/mappings/pipelines/ternary_matmul.rtlmap.json",
+  "workload": "ternary_matmul",
+  "target_ip": "ternary_matmul_core",
+  "summary": {
+    "events": 3,
+    "global_loads": 1,
+    "global_stores": 1,
+    "shared_loads": 0,
+    "shared_stores": 0,
+    "tensor_ops": 1,
+    "sync_ops": 0,
+    "payload_bytes": 128
+  },
+  "events": [
+    {
+      "step": 0,
+      "line": 0,
+      "label": "ternary_matmul.0.tmatmul_import",
+      "text": "tmatmul_import",
+      "predicate": null,
+      "opcode": "tmatmul_import",
+      "class": "memory",
+      "memory_space": "global",
+      "direction": "load",
+      "bytes": 64,
+      "backend": "ternary_matmul_core",
+      "selected_ip": "ternary_matmul_core",
+      "rtl_node_id": "ternary_matmul.0.tmatmul_import",
+      "wrapper": "gemma_codegen_ternary_matmul_core_df"
+    },
+    {
+      "step": 1,
+      "line": 0,
+      "label": "ternary_matmul.1.tmatmul_go",
+      "text": "tmatmul_go",
+      "predicate": null,
+      "opcode": "tmatmul_go",
+      "class": "tensor",
+      "memory_space": null,
+      "direction": "compute",
+      "bytes": 0,
+      "backend": "ternary_matmul_core",
+      "selected_ip": "ternary_matmul_core",
+      "rtl_node_id": "ternary_matmul.1.tmatmul_go",
+      "wrapper": "gemma_codegen_ternary_matmul_core_df"
+    },
+    {
+      "step": 2,
+      "line": 0,
+      "label": "ternary_matmul.2.tmatmul_export",
+      "text": "tmatmul_export",
+      "predicate": null,
+      "opcode": "tmatmul_export",
+      "class": "memory",
+      "memory_space": "global",
+      "direction": "store",
+      "bytes": 64,
+      "backend": "ternary_matmul_core",
+      "selected_ip": "ternary_matmul_core",
+      "rtl_node_id": "ternary_matmul.2.tmatmul_export",
+      "wrapper": "gemma_codegen_ternary_matmul_core_df"
+    }
+  ]
+}

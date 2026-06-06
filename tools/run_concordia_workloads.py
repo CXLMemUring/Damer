@@ -12,7 +12,9 @@ CONCORDIA = pathlib.Path("/root/Concordia/Concordia/SlugArch")
 SLUGARCH = CONCORDIA / "target" / "debug" / "slugarch"
 WORKLOAD_DIR = ROOT / "workloads" / "concordia"
 GENERATED_DIR = WORKLOAD_DIR / "generated"
+PTXSPATIAL_DIR = WORKLOAD_DIR / "ptxspatial"
 GENERATOR = ROOT / "tools" / "generate_concordia_mlir.py"
+PTXSPATIAL_GENERATOR = ROOT / "tools" / "compile_ptx_to_circt_trace.py"
 
 
 def run(cmd, cwd=ROOT):
@@ -56,7 +58,11 @@ def parse_slugarch(output):
 
 
 def run_mlir_workload(path):
-    is_hardware = path.name.endswith("_hardware.mlir") or "hardware" in path.stem
+    is_hardware = (
+        path.name.endswith("_hardware.mlir")
+        or "hardware" in path.stem
+        or path.name.endswith(".circt-trace.mlir")
+    )
     pass_arg = "--cxl-hw-data-movement" if is_hardware else "--cxl-sw-data-movement"
     attr = (
         "cxl.hw_data_movement_summary"
@@ -86,6 +92,8 @@ def main():
 
     if GENERATOR.exists():
         run([GENERATOR])
+    if PTXSPATIAL_GENERATOR.exists():
+        run([PTXSPATIAL_GENERATOR])
 
     mlir_files = [
         WORKLOAD_DIR / "slugarch-cxl-gemm-software.mlir",
@@ -93,6 +101,8 @@ def main():
     ]
     if GENERATED_DIR.exists():
         mlir_files.extend(sorted(GENERATED_DIR.glob("*.mlir")))
+    if PTXSPATIAL_DIR.exists():
+        mlir_files.extend(sorted(PTXSPATIAL_DIR.glob("*.mlir")))
 
     mlir_runs = [run_mlir_workload(path) for path in mlir_files]
     slugarch_output = run([SLUGARCH, "run-cxl", job_file], cwd=CONCORDIA)

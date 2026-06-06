@@ -81,11 +81,32 @@ tools/run_concordia_workloads.py --markdown
 It runs the software pass over the 49-FLIT request/response software model, the
 hardware pass over the SlugCXL endpoint boundary model, and the already-built
 Concordia `slugarch` binary against the copied GEMM fixture. It also regenerates
-descriptor-derived MLIR for Concordia's `generic_gemm` systolic-array mappings
-and `ternary_matmul`/tmatmul mapping:
+descriptor-derived MLIR for Concordia's tracked pipeline rtlmaps, including
+`generic_gemm`, `ternary_matmul`, `qwen_decode_token`, and
+`qwen_prefill_gemm`:
 
 ```bash
 tools/generate_concordia_mlir.py
+```
+
+The PTXSpatial trace path lowers Concordia PTX or RTL mapping descriptors into a
+JSON event trace plus CIRCT HW trace MLIR:
+
+```bash
+tools/compile_ptx_to_circt_trace.py --from-concordia
+build/tools/cxl-data-movement-opt/cxl-data-movement-opt \
+  --cxl-hw-data-movement \
+  workloads/concordia/ptxspatial/gemm.circt-trace.mlir
+```
+
+By default this reads Concordia's `tests/fixtures/gemm.ptx` from git `HEAD`,
+maps the GEMM tensor event to `systolic_array_16x16`, and emits a descriptor
+derived trace for each covered pipeline rtlmap.
+
+To see which Concordia inputs are covered and which are still frontier work:
+
+```bash
+tools/concordia_coverage_report.py
 ```
 
 ## In-Tree CIRCT Port
