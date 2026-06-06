@@ -68,6 +68,26 @@ attributes {
 Per-operation attributes such as `{cxl.hw.role = "device"}` override propagated
 roles and mark a CXL-facing endpoint or boundary.
 
+## Concordia Workload Run
+
+The `workloads/concordia` directory contains a local model of the Concordia
+SlugArch CXL GEMM workload and a runner that compares this pass against
+Concordia's `slugarch run-cxl` path:
+
+```bash
+tools/run_concordia_workloads.py --markdown
+```
+
+It runs the software pass over the 49-FLIT request/response software model, the
+hardware pass over the SlugCXL endpoint boundary model, and the already-built
+Concordia `slugarch` binary against the copied GEMM fixture. It also regenerates
+descriptor-derived MLIR for Concordia's `generic_gemm` systolic-array mappings
+and `ternary_matmul`/tmatmul mapping:
+
+```bash
+tools/generate_concordia_mlir.py
+```
+
 ## In-Tree CIRCT Port
 
 To upstream this into CIRCT, move the TableGen declarations into the appropriate
